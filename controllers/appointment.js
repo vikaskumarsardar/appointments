@@ -145,7 +145,7 @@ exports.getAllAppointments = async (req, res) => {
     sendResponse(req, res, statusCodes.OK, messages.SUCCESS, {
       itemCount: foundAppointments.length,
       foundAppointments,
-    });
+    })
   } catch (err) {
     sendErrorResponse(
       req,

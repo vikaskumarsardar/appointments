@@ -34,6 +34,12 @@
 // month = month < 10 ? '0' + month.toString() : month
 // console.log(parseInt(month));
 // console.log(new Date("2022-06-07T07:46:02.618Z").toLocaleString())
-const date = new Date("2022-06-14")
-console.log(date.getDate())
-console.log(new Date(date.getTime() - (6 * 1000 * 60 * 60 * 24)).getDate());
+// const date = new Date("2022-06-14")
+// console.log(date.getDate())
+// console.log(new Date(date.getTime() - (6 * 1000 * 60 * 60 * 24)).getDate());
+
+
+for(a = 1;a <=10;a++){
+    console.log(a)
+}
+// A(90,23)

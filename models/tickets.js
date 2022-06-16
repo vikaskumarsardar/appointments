@@ -9,15 +9,8 @@ const ticketSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    availableQuantity: {
-      type: Number,
-      default: 0,
-    },
+
     price: {
-      type: Number,
-      default: 0,
-    },
-    totalIncome: {
       type: Number,
       default: 0,
     },

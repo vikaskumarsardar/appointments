@@ -2,12 +2,58 @@ const mongoose = require("mongoose");
 const eventSchema = new mongoose.Schema(
   {
     eventTitle: {
-      type: String,
-      default: "",
+      eventTitle: {
+        type: String,
+        default: "",
+      },
+      eventType: {
+        type: String,
+        default: "private",
+      },
+      eventBanner: {
+        type: String,
+        default: "",
+      },
     },
-    eventType: {
-      type: String,
-      default: "private",
+    hostInfo: {
+      name: {
+        type: String,
+        default: "",
+      },
+      email: {
+        type: String,
+        default: "",
+      },
+      mobileNo: {
+        type: String,
+        default: "",
+      },
+      alternateMobile: {
+        type: String,
+        default: "",
+      },
+    },
+    venue: {
+      startDateAndTime: {
+        type: Date,
+      },
+      endDateAndTime: {
+        type: Date,
+      },
+      location: {
+        type: String,
+        default: "",
+      },
+      street: {
+        type: String,
+        default: "",
+      },
+      city: {
+        type: String,
+        default: "",
+      },
+      state: { type: String, default: "" },
+      ZIP: { type: String, default: "" },
     },
     isCanceled: {
       type: Boolean,
@@ -17,75 +63,31 @@ const eventSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    eventBanner: {
-      type: String,
-      default: "",
-    },
-    hostName: {
-      type: String,
-      default: "",
-    },
-    hostEmail: {
-      type: String,
-      default: "",
-    },
-    mobilePhone: {
-      type: String,
-      default: "",
-    },
-    altMobile: {
-      type: String,
-      default: "",
-    },
-    startDateAndTime: {
-      type: Date,
-    },
-    endDateAndTime: {
-      type: Date,
-    },
-    location: {
-      type: String,
-      default: "",
-    },
-    city: {
-      type: String,
-      default: "",
-    },
-    street: {
-      type: String,
-      default: "",
-    },
-    state: {
-      type: String,
-      default: "",
-    },
-    ZIP: {
-      type: String,
-      default: "",
-    },
     isDeleted: {
       type: Boolean,
       default: false,
     },
-    ticketType: {
-      type: String,
-      default: "paid",
-    },
-    ticketName: {
-      type: String,
-      default: "",
-    },
-    availableQuantity: {
-      type: String,
-      default: "",
-    },
-    price: {
-      type: Number,
-      default: 0,
-    },
-    totalIncome: {
-      type: Number,
-      default: 0,
+    ticketInfo: {
+      ticketType: {
+        type: String,
+        default: "paid",
+      },
+      ticketName: {
+        type: String,
+        default: "",
+      },
+      availableQuantity: {
+        type: String,
+        default: "",
+      },
+      price: {
+        type: Number,
+        default: 0,
+      },
+      totalIncome: {
+        type: Number,
+        default: 0,
+      },
     },
   },
   {

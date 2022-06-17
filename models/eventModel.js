@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const eventSchema = new mongoose.Schema(
-  {
+  {eventTitle: {
     eventTitle: {
       type: String,
       default: "",
@@ -9,34 +9,30 @@ const eventSchema = new mongoose.Schema(
       type: String,
       default: "private",
     },
-    isCanceled: {
-      type: Boolean,
-      default: false,
-    },
-    isCompleted: {
-      type: Boolean,
-      default: false,
-    },
     eventBanner: {
       type: String,
       default: "",
     },
-    hostName: {
+  },
+  hostInfo: {
+    name: {
       type: String,
       default: "",
     },
-    hostEmail: {
+    email: {
       type: String,
       default: "",
     },
-    mobilePhone: {
+    mobileNo: {
       type: String,
       default: "",
     },
-    altMobile: {
+    alternateMobile: {
       type: String,
       default: "",
     },
+  },
+  venue: {
     startDateAndTime: {
       type: Date,
     },
@@ -47,26 +43,30 @@ const eventSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    city: {
-      type: String,
-      default: "",
-    },
     street: {
       type: String,
       default: "",
     },
-    state: {
+    city: {
       type: String,
       default: "",
     },
-    ZIP: {
-      type: String,
-      default: "",
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
+    state: { type: String, default: "" },
+    ZIP: { type: String, default: "" },
+  },
+  isCanceled: {
+    type: Boolean,
+    default: false,
+  },
+  isCompleted: {
+    type: Boolean,
+    default: false,
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+  ticketInfo: {
     ticketType: {
       type: String,
       default: "paid",
@@ -87,7 +87,8 @@ const eventSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-  },
+  }
+},
   {
     timestamps: true,
   }
@@ -95,3 +96,6 @@ const eventSchema = new mongoose.Schema(
 
 const eventModel = mongoose.model("event", eventSchema);
 module.exports = eventModel;
+
+
+

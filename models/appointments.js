@@ -1,11 +1,23 @@
 const mongoose = require("mongoose");
 const appointmentSchema = new mongoose.Schema(
   {
-    appointment: {
+    title: {
       type: String,
       default: "",
     },
-    date: {
+    label: {
+      type: String,
+      default: "",
+    },
+    location: {
+      type: String,
+      default: "",
+    },
+    description: {
+      type: String,
+      default: "",
+    },
+    dateAndTime: {
       type: Date,
       default: new Date(Date.now() + 4 * 1000 * 60 * 60),
     },

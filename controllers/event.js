@@ -3,7 +3,8 @@ const { statusCodes } = require("../statusCodes");
 const { sendErrorResponse, sendResponse } = require("../lib");
 const { eventModel } = require("../models");
 const { constants } = require("../constants");
-const { countDocuments } = require("../models/appointments");
+const fs = require("fs");
+const path = require("path");
 
 exports.addEvent = async (req, res) => {
   try {
@@ -17,6 +18,14 @@ exports.addEvent = async (req, res) => {
       .exec();
 
     if (foundEvents.length > 0) {
+      fs.unlink(
+        path.resolve(`${constants.paths.bannerUploads}/${req.file.filename}`),
+        (err) => {
+          console.log(path.resolve(`${constants.paths.bannerUploads}/${req.file.filename}`))
+          if (err) throw err;
+          console.log("successfully removed file");
+        }
+      );
       return sendResponse(
         req,
         res,

@@ -18,8 +18,8 @@ exports.checkUploads = async (req, res, next) => {
     //       .lean()
     //       .exec();
     //       if(foundEvents.length > 0) return sendResponse(req,res,statusCodes.BAD_REQUEST,messages.EVENT_ALREADY_EXISTS)
-    return
-    // next();
+    // return
+    next();
   } catch (err) {
     console.log(err);
     sendErrorResponse(

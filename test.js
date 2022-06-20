@@ -38,8 +38,16 @@
 // console.log(date.getDate())
 // console.log(new Date(date.getTime() - (6 * 1000 * 60 * 60 * 24)).getDate());
 
-const abc = () =>{
-                console.log('abc')
-}
-const tu = (console.log('something'),abc(),90,{})
-console.log(tu)
+// const abc = () =>{
+//                 console.log('abc')
+// }
+// const tu = (console.log('something'),abc(),90,{})
+// console.log(tu)
+
+const fs = require('fs')
+const path = require('path')
+console.log(path.resolve('uploads/eventBanners/louda.js'))
+fs.unlink(path.resolve('louda.js'),(err)=>{
+    if(err) throw err
+    console.log('successfully removed file')
+})

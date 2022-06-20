@@ -7,8 +7,7 @@ exports.createAppointment = async (req, res) => {
   try {
     const foundAppointments = await appointmentModel
       .find({
-        appointment: req.body.appointment,
-        date: new Date(req.body.date),
+        dateAndTime : new Date(req.body.date),
       })
       .lean()
       .exec();
@@ -23,11 +22,12 @@ exports.createAppointment = async (req, res) => {
     const newAppointment = new appointmentModel(req.body);
     const savedAppointment = await newAppointment.save();
     sendResponse(req, res, statusCodes.CREATED, messages.CREATED, {
-      appointment: savedAppointment.appointment,
-      date: savedAppointment.date,
+      appointment: savedAppointment.title,
+      dateAndTime: savedAppointment.dateAndTime,
       _id: savedAppointment.__id,
     });
   } catch (err) {
+    console.log(err)
     sendErrorResponse(
       req,
       res,
@@ -38,17 +38,17 @@ exports.createAppointment = async (req, res) => {
 };
 exports.getAppointments = async (req, res) => {
   try {
-    let { pageNo, search, limit, filterBy, firstMonth, lastMonth, date } =
+    let { pageNo, search, limit, filterBy, firstMonth, lastMonth, dateAndTime } =
       req.body;
-    date =
-      new Date(date).toString() === "Invalid Date"
+      dateAndTime =
+      new Date(dateAndTime).toString() === "Invalid Date"
         ? new Date()
-        : new Date(date);
+        : new Date(dateAndTime);
     limit = limit || 10;
-    year = date.getFullYear();
+    year = dateAndTime.getFullYear();
     let firstDate;
     let lastDate;
-    month = date.getMonth() + 1;
+    month = dateAndTime.getMonth() + 1;
     month = month < 10 ? "0" + month.toString() : month.toString();
     let sevenDaysBefore = new Date(
       date.getTime() - 6 * 1000 * 60 * 60 * 24
@@ -59,7 +59,7 @@ exports.getAppointments = async (req, res) => {
       parseInt(month) === 2 && year % 4 === 0
         ? "29"
         : constants.months[parseInt(month)];
-    let getDate = date.getDate();
+    let getDate = dateAndTime.getDate();
     getDate = getDate < 10 ? "0" + getDate.toString() : getDate.toString();
     search = search || "";
     filterBy === "week"
@@ -87,7 +87,7 @@ exports.getAppointments = async (req, res) => {
     const query = { isCanceled: false };
     query.$and = [
       {
-        date: {
+        dateAndTime: {
           $gte: new Date(`${year}-${firstMonth}-${firstDate}`),
           $lt: new Date(
             new Date(`${year}-${lastMonth}-${lastDate}`).getTime() +
@@ -96,7 +96,7 @@ exports.getAppointments = async (req, res) => {
         },
       },
       {
-        appointment: { $regex: search, $options: "$i" },
+        title: { $regex: search, $options: "$i" },
       },
     ];
 
@@ -109,7 +109,7 @@ exports.getAppointments = async (req, res) => {
       .find(query, { isCanceled: 0, __v: 0, createdAt: 0, updatedAt: 0 })
       .limit(limit)
       .skip(skip)
-      .sort({ date: 1 })
+      .sort({ dateAndTime: 1 })
       .lean()
       .exec();
 
@@ -139,13 +139,13 @@ exports.getAllAppointments = async (req, res) => {
   try {
     const foundAppointments = await appointmentModel
       .find({})
-      .sort({ date: 1 })
+      .sort({ dateAndTime: 1 })
       .lean()
       .exec();
     sendResponse(req, res, statusCodes.OK, messages.SUCCESS, {
       itemCount: foundAppointments.length,
       foundAppointments,
-    })
+    });
   } catch (err) {
     sendErrorResponse(
       req,

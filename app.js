@@ -3,6 +3,7 @@ const path = require("path");
 const { constants } = require("./constants/");
 module.exports = (app) => {
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(
     constants.paths.banners,
     express.static(path.resolve(constants.paths.bannerUploads))

@@ -2,14 +2,43 @@ const { messages } = require("../messages");
 const { statusCodes } = require("../statusCodes");
 const { sendErrorResponse, sendResponse } = require("../lib");
 const { eventModel } = require("../models");
+const { constants } = require("../constants");
 const { countDocuments } = require("../models/appointments");
 
 exports.addEvent = async (req, res) => {
   try {
+    const foundEvents = await eventModel
+      .find({
+        "venue.startDateAndTime": new Date(req.body["venue.startDateAndTime"]),
+        "venue.endDateAndTime": new Date(req.body["venue.endDateAndTime"]),
+        "hostInfo.email": req.body["hostInfo.email"],
+      })
+      .lean()
+      .exec();
+
+    if (foundEvents.length > 0) {
+      return sendResponse(
+        req,
+        res,
+        statusCodes.BAD_REQUEST,
+        messages.EVENT_ALREADY_EXISTS
+      );
+    }
+    req.body["venue.startDateAndTime"] = new Date(
+      req.body["venue.startDateAndTime"]
+    );
+    req.body["venue.endDateAndTime"] = new Date(
+      req.body["venue.endDateAndTime"]
+    );
     const newEvent = new eventModel(req.body);
+    newEvent.eventTitle.eventBanner = req.file
+      ? `${constants.paths.banners}${req.file?.filename}`
+      : "";
     const savedEvent = await newEvent.save();
     sendResponse(req, res, statusCodes.CREATED, messages.CREATED, savedEvent);
   } catch (err) {
+    console.log(err);
+
     sendErrorResponse(
       req,
       res,
@@ -21,18 +50,37 @@ exports.addEvent = async (req, res) => {
 
 exports.editEvent = async (req, res) => {
   try {
+    const image = req.file?.filename;
+    req.body["eventTitle.eventBanner"] =
+      image && `${constants.paths.banners}${image}`;
+    console.log(image, req.body["eventTitle.eventBanner"]);
+
     const foundEvents = await eventModel
       .updateOne(
-        { _id: req.params._id, isCompleted: false },
-        { $set: req.body },
-        { upsert: true }
+        { _id: req.query.id, isCompleted: false, isDeleted: false },
+        { $set: req.body }
       )
       .lean()
       .exec();
-    return foundEvents.matchedCount === 1
+
+    console.log(foundEvents);
+    return foundEvents.matchedCount === 1 && foundEvents.modifiedCount === 1
       ? sendResponse(req, res, statusCodes.OK, messages.UPDATED_SUCCESSFULLY)
-      : sendResponse(req, res, statusCodes.CREATED, messages.CREATED);
+      : foundEvents.matchedCount === 1
+      ? sendResponse(
+          req,
+          res,
+          statusCodes.BAD_REQUEST,
+          messages.ALREADY_UPTODATE
+        )
+      : sendResponse(
+          req,
+          res,
+          statusCodes.BAD_REQUEST,
+          messages.NO_EVENTS_FOUND
+        );
   } catch (err) {
+    console.log(err);
     sendErrorResponse(
       req,
       res,
@@ -44,9 +92,10 @@ exports.editEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
   try {
+    console.log(req.query);
     const foundEvents = await eventModel
       .updateOne(
-        { _id: req.params._id, isCompleted: false, isDeleted: false },
+        { _id: req.query.id, isCompleted: false, isDeleted: false },
         { $set: { isDeleted: true } }
       )
       .lean()
@@ -96,13 +145,18 @@ exports.getEvents = async (req, res) => {
 
     const eventCounts = await eventModel.countDocuments(query).exec();
     const foundEvents = await eventModel
-      .find(query)
+      .find(query, {
+        createdAt: 0,
+        updatedAt: 0,
+        __v: 0,
+        "ticketInfo.totalIncome": 0,
+      })
       .skip(skip)
       .limit(limit)
       .lean()
       .exec();
 
-    const pageCount = Math.ceil(countDocuments / limit);
+    const pageCount = Math.ceil(eventCounts / limit);
     const message =
       eventCounts > 0 ? messages.SUCCESS : messages.NO_EVENTS_FOUND;
     sendResponse(req, res, statusCodes.OK, message, {

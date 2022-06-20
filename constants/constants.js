@@ -2,7 +2,7 @@ module.exports = {
   limit: 10,
   paths : {
     banners : '/static/banners/',
-    bannerUploads : "uploads/events"
+    bannerUploads : "uploads/eventBanners"
   },
   months: {
     1: "31",

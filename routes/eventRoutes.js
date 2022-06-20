@@ -1,9 +1,10 @@
 const {getEvents,addEvent,deleteEvent,editEvent,} = require('../controllers/')
 const express = require('express')
+const {banners} = require('../services')
 const Router = express.Router()
+Router.post('/addEvent',banners,addEvent)
 Router.get('/getEvents',getEvents)
-Router.post('/addEvent',addEvent)
-Router.delete('/deleteEvent/:_id',deleteEvent)
-Router.post('/editEvent/:_id',editEvent)
+Router.delete('/deleteEvent',deleteEvent)
+Router.put('/editEvent',banners,editEvent)
 
 module.exports = Router

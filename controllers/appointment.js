@@ -22,7 +22,7 @@ exports.createAppointment = async (req, res) => {
     const newAppointment = new appointmentModel(req.body);
     const savedAppointment = await newAppointment.save();
     sendResponse(req, res, statusCodes.CREATED, messages.CREATED, {
-      appointment: savedAppointment.title,
+      title: savedAppointment.title,
       dateAndTime: savedAppointment.dateAndTime,
       _id: savedAppointment.__id,
     });

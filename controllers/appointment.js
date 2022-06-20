@@ -7,7 +7,7 @@ exports.createAppointment = async (req, res) => {
   try {
     const foundAppointments = await appointmentModel
       .find({
-        dateAndTime : new Date(req.body.date),
+        dateAndTime: new Date(req.body.date),
       })
       .lean()
       .exec();
@@ -27,7 +27,7 @@ exports.createAppointment = async (req, res) => {
       _id: savedAppointment.__id,
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     sendErrorResponse(
       req,
       res,
@@ -38,9 +38,16 @@ exports.createAppointment = async (req, res) => {
 };
 exports.getAppointments = async (req, res) => {
   try {
-    let { pageNo, search, limit, filterBy, firstMonth, lastMonth, dateAndTime } =
-      req.body;
-      dateAndTime =
+    let {
+      pageNo,
+      search,
+      limit,
+      filterBy,
+      firstMonth,
+      lastMonth,
+      dateAndTime,
+    } = req.body;
+    dateAndTime =
       new Date(dateAndTime).toString() === "Invalid Date"
         ? new Date()
         : new Date(dateAndTime);
@@ -51,7 +58,7 @@ exports.getAppointments = async (req, res) => {
     month = dateAndTime.getMonth() + 1;
     month = month < 10 ? "0" + month.toString() : month.toString();
     let sevenDaysBefore = new Date(
-      date.getTime() - 6 * 1000 * 60 * 60 * 24
+      dateAndTime.getTime() - 6 * 1000 * 60 * 60 * 24
     ).getDate();
     sevenDaysBefore =
       sevenDaysBefore < 10 ? "0" + sevenDaysBefore.toString() : sevenDaysBefore;
